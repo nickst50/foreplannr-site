@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foreplannr - Coming Soon</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0f1a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1); 
+                opacity: 0.3; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2); 
+                opacity: 0.15; 
+            }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 80px 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .logo-container {
+            margin-bottom: 80px;
+        }
+        
+        .logo {
+            width: 250px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(0 0 40px rgba(0, 255, 136, 0.5));
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+            padding: 12px 28px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 35px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline {
+            font-size: 24px;
+            color: #94a3b8;
+            margin-bottom: 60px;
+            line-height: 1.7;
+            max-width: 850px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .email-form {
+            max-width: 600px;
+            margin: 0 auto 70px;
+        }
+        
+        .form-group {
+            display: flex;
+            gap: 12px;
+            background: rgba(21, 27, 43, 0.6);
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group:focus-within {
+            border-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+        
+        input[type="email"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 18px 24px;
+            color: #ffffff;
+            font-size: 17px;
+            outline: none;
+        }
+        
+        input::placeholder {
+            color: #94a3b8;
+        }
+        
+        button {
+            background: #00ff88;
+            color: #0a0f1a;
+            padding: 18px 36px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            background: #00d4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .countdown {
+            margin: 70px auto;
+            padding: 45px;
+            background: rgba(21, 27, 43, 0.4);
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            max-width: 700px;
+        }
+        
+        .countdown-label {
+            font-size: 14px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+        }
+        
+        .countdown-item {
+            text-align: center;
+        }
+        
+        .countdown-value {
+            font-size: 56px;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+        
+        .countdown-unit {
+            font-size: 13px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            margin-top: 90px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .feature {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .feature h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #00ff88;
+        }
+        
+        .feature p {
+            font-size: 16px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 60px 30px; }
+            .logo { width: 180px; }
+            h1 { font-size: 42px; }
+            .tagline { font-size: 18px; margin-bottom: 40px; }
+            .features { grid-template-columns: 1fr; gap: 60px; }
+            .countdown-timer { gap: 30px; }
+            .countdown-value { font-size: 42px; }
+            .form-group { flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/7hCV5rFB/Foreplannr.png" alt="Foreplannr" class="logo">
+        </div>
+        
+        <div class="badge">⚡ Coming Soon</div>
+        
+        <h1>Building the Future<br>of Project Handoffs</h1>
+        
+        <p class="tagline">
+            The project management platform built for electrical contractors.<br>
+            Seamless bid-to-execution handoffs. Zero details lost.
+        </p>
+        
+        <form class="email-form" onsubmit="event.preventDefault(); alert('Thanks! We\'ll notify you at ' + document.getElementById('email').value + ' when we launch! 🚀'); document.getElementById('email').value = '';">
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Enter your email for early access" required>
+                <button type="submit">Notify Me</button>
+            </div>
+        </form>
+        
+        <div class="countdown">
+            <div class="countdown-label">Launching In</div>
+            <div class="countdown-timer">
+                <div class="countdown-item">
+                    <div class="countdown-value" id="days">13</div>
+                    <div class="countdown-unit">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="hours">23</div>
+                    <div class="countdown-unit">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="minutes">59</div>
+                    <div class="countdown-unit">Minutes</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📋</div>
+                <h3>Complete Handoffs</h3>
+                <p>Capture scope, assumptions, and every critical detail</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>PMs get notified instantly with everything they need</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Built for Trades</h3>
+                <p>Designed by contractors who understand your workflow</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const launch = new Date();
+        launch.setDate(launch.getDate() + 14);
+        
+        function updateCountdown() {
+            const now = new Date();
+            const diff = launch - now;
+            
+            const days = Math.floor(diff / 86400000);
+            const hours = Math.floor((diff % 86400000) / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
