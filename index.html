@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en" data-cl-brand="hubspot-2025">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foreplannr — Where Construction Projects Go to Close Out</title>
+  <meta name="description" content="Foreplannr gives construction PMs a single source of truth — from groundbreak to closeout.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────── */
+    :root {
+      /* Brand */
+      --brand-orange:          #ff4800;
+      --brand-orange-hover:    #c93700;
+      --brand-orange-pressed:  #9f2800;
+
+      /* Backgrounds (light mode defaults) */
+      --bg-light:    #fcfcfa;
+      --bg-warm:     #f8f5ee;
+      --bg-white:    #ffffff;
+      --bg-dark:     #1f1f1f;
+      --bg-darker:   #141414;
+
+      /* Text */
+      --text-dark:   #1f1f1f;
+      --text-muted:  rgba(31,31,31,.55);
+      --text-white:  #ffffff;
+      --text-white-muted: rgba(255,255,255,.65);
+
+      /* Borders */
+      --border-light: rgba(0,0,0,.11);
+      --border-dark:  rgba(0,0,0,.47);
+
+      /* Buttons */
+      --btn-primary-bg:      #ff4800;
+      --btn-primary-hover:   #c93700;
+      --btn-secondary-bg:    #ffffff;
+      --btn-secondary-hover: #fcece6;
+
+      /* Salmon gradient */
+      --salmon-from: #fcc6b1;
+      --salmon-to:   #fce8df;
+
+      /* Typography */
+      --font-sans:    'DM Sans', system-ui, sans-serif;
+      --font-serif:   'Lora', Georgia, serif;
+
+      /* Spacing */
+      --nav-h: 56px;
+      --max-w: 1200px;
+      --section-py: 80px;
+    }
+
+    /* ─── Dark Mode Overrides ─────────────────────────────── */
+    body.dark {
+      --bg-light:    #0f1117;
+      --bg-warm:     #161b27;
+      --bg-white:    #1a2030;
+      --bg-dark:     #0a0d14;
+      --bg-darker:   #070a10;
+      --text-dark:   #f0f4f8;
+      --text-muted:  rgba(240,244,248,.55);
+      --border-light: rgba(255,255,255,.08);
+      --border-dark:  rgba(255,255,255,.3);
+      --btn-secondary-bg:    #1a2030;
+      --btn-secondary-hover: #212d40;
+      --salmon-from: #1a1025;
+      --salmon-to:   #0f1a20;
+    }
+
+    /* Nav dark */
+    body.dark .nav-wrapper { background: var(--bg-white); border-bottom-color: var(--border-light); }
+    body.dark .nav-link { color: var(--text-dark); }
+    body.dark .nav-link:hover { background: rgba(255,255,255,.05); }
+    body.dark .nav-hamburger span { background: var(--text-dark); }
+    body.dark .nav-mobile { background: var(--bg-white); border-top-color: var(--border-light); }
+    body.dark .nav-mobile .nav-link { border-bottom-color: var(--border-light); }
+
+    /* Social proof dark */
+    body.dark .social-proof { background: var(--bg-white); border-color: var(--border-light); }
+    body.dark .logo-name { color: rgba(240,244,248,.25); }
+    body.dark .logo-name:hover { color: rgba(240,244,248,.5); }
+
+    /* Platform dark */
+    body.dark .platform { background: var(--bg-white); }
+    body.dark .tab-visual { background: var(--bg-light); }
+    body.dark .tab-card { background: var(--bg-white); border-color: var(--border-light); }
+    body.dark .tab-card-title { color: var(--text-dark); }
+    body.dark .tab-card-sub { color: var(--text-muted); }
+
+    /* Feature cards dark */
+    body.dark .feature-card { background: var(--bg-white); border-color: var(--border-light); }
+    body.dark .feature-name { color: var(--text-dark); }
+
+    /* Results dark */
+    body.dark .results { background: var(--bg-white); }
+    body.dark .testimonial { background: var(--bg-light); }
+    body.dark .testimonial-quote { color: var(--text-dark); }
+
+    /* Btn secondary dark */
+    body.dark .btn-secondary { background: var(--btn-secondary-bg); color: var(--text-dark); border-color: var(--border-dark); }
+    body.dark .btn-secondary:hover { background: var(--btn-secondary-hover); }
+
+    /* Dashboard dark */
+    body.dark .dash-main { background: var(--bg-light); }
+    body.dark .dash-topbar { background: var(--bg-white); }
+    body.dark .dash-stat { background: var(--bg-white); border-color: var(--border-light); }
+    body.dark .dash-stat-val { color: var(--text-dark); }
+    body.dark .dash-table { background: var(--bg-white); border-color: var(--border-light); }
+    body.dark .dash-row { border-bottom-color: var(--border-light); }
+    body.dark .dash-row-name { color: var(--text-dark); }
+
+    /* AI section dark: deep charcoal instead of salmon */
+    body.dark .ai-section { background: linear-gradient(135deg, #1a1010 0%, #1a0f00 100%); }
+    body.dark .ai-card { background: rgba(255,255,255,.04); border-color: rgba(255,72,0,.15); }
+    body.dark .ai-card-name { color: #f0f4f8; }
+    body.dark .ai-card-desc { color: rgba(240,244,248,.6); }
+    body.dark .ai-h2 { color: #f0f4f8; }
+    body.dark .ai-sub { color: rgba(240,244,248,.6); }
+
+    /* ─── Theme Toggle ────────────────────────────────────── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      width: 64px;
+      height: 32px;
+      padding: 3px;
+      border-radius: 100px;
+      border: 1px solid var(--border-light);
+      background: #18181b;
+      cursor: pointer;
+      transition: background .3s, border-color .3s;
+      position: relative;
+      flex-shrink: 0;
+    }
+    body:not(.dark) .theme-toggle {
+      background: #ffffff;
+      border-color: #e4e4e7;
+    }
+    .toggle-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .toggle-knob {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .3s cubic-bezier(.4,0,.2,1), background .3s;
+      background: #3f3f46;
+      flex-shrink: 0;
+    }
+    body:not(.dark) .toggle-knob {
+      transform: translateX(32px);
+      background: #e4e4e7;
+    }
+    .toggle-bg-icon {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .toggle-icon { width: 16px; height: 16px; }
+    .toggle-icon-dark { color: #ffffff; }
+    .toggle-icon-light { color: #71717a; }
+    body:not(.dark) .toggle-icon-dark { color: #000000; }
+    body:not(.dark) .toggle-icon-light { color: #a1a1aa; }
+
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text-dark);
+      background: var(--bg-light);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+
+    /* ─── Utility ────────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .overline {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .overline-orange { color: var(--brand-orange); }
+
+    /* ─── Buttons ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      line-height: 1;
+      transition: background .18s, color .18s, border-color .18s, box-shadow .18s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--btn-primary-bg);
+      color: #fff;
+      border: 2px solid var(--btn-primary-bg);
+    }
+    .btn-primary:hover { background: var(--btn-primary-hover); border-color: var(--btn-primary-hover); }
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--text-dark);
+      border: 2px solid var(--border-dark);
+    }
+    .btn-secondary:hover { background: #f5f5f5; }
+    .btn-secondary-orange {
+      background: transparent;
+      color: var(--brand-orange);
+      border: 2px solid var(--brand-orange);
+    }
+    .btn-secondary-orange:hover { background: var(--btn-secondary-hover); }
+    .btn-ghost-white {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.4);
+    }
+    .btn-ghost-white:hover { border-color: rgba(255,255,255,.8); background: rgba(255,255,255,.05); }
+    .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+    .btn-lg { padding: 14px 28px; font-size: 1rem; }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border-light);
+      transition: box-shadow .2s;
+    }
+    .nav-wrapper.scrolled {
+      box-shadow: 0 2px 12px rgba(33,51,67,.12);
+    }
+    .nav-inner {
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-family: var(--font-sans);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--brand-orange);
+      letter-spacing: -.02em;
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      justify-content: center;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      transition: background .15s;
+    }
+    .nav-link:hover { background: var(--bg-light); }
+    .nav-chevron {
+      width: 14px;
+      height: 14px;
+      opacity: .5;
+      flex-shrink: 0;
+    }
+    .nav-ctas { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-dark);
+      border-radius: 2px;
+      transition: all .2s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* mobile menu */
+    .nav-mobile {
+      display: none;
+      background: var(--bg-white);
+      border-top: 1px solid var(--border-light);
+      padding: 16px 24px 24px;
+    }
+    .nav-mobile.open { display: block; }
+    .nav-mobile .nav-link { padding: 12px 8px; font-size: 1rem; border-bottom: 1px solid var(--border-light); border-radius: 0; }
+    .nav-mobile .nav-ctas { margin-top: 16px; flex-direction: column; gap: 10px; }
+    .nav-mobile .btn { width: 100%; text-align: center; justify-content: center; }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero {
+      background: var(--bg-dark);
+      color: var(--text-white);
+      padding: 80px 0 0;
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding-bottom: 0;
+    }
+    .hero-content { padding-bottom: 80px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,72,0,.12);
+      border: 1px solid rgba(255,72,0,.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #ffb38a;
+      margin-bottom: 24px;
+    }
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand-orange);
+      flex-shrink: 0;
+    }
+    .hero-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--text-white-muted);
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ─── INLINE WAITLIST FORM ───────────────────────────────── */
+    .inline-waitlist { display: flex; flex-direction: column; gap: 10px; max-width: 420px; }
+    .inline-waitlist-row { display: flex; gap: 8px; }
+    .inline-waitlist-input {
+      flex: 1; min-width: 0;
+      padding: 11px 16px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.09);
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color .15s, background .15s;
+    }
+    .inline-waitlist-input::placeholder { color: rgba(255,255,255,.4); }
+    .inline-waitlist-input:focus { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.13); }
+    .inline-waitlist-error { font-size: 0.8rem; color: #ff9980; display: none; margin: 0; }
+    .inline-waitlist-success { display: none; font-size: 0.95rem; color: rgba(255,255,255,.85); line-height: 1.5; }
+    .inline-waitlist-success strong { color: #fff; }
+    .inline-waitlist.done .inline-waitlist-row,
+    .inline-waitlist.done .inline-waitlist-error { display: none; }
+    .inline-waitlist.done .inline-waitlist-success { display: block; }
+
+    /* Dashboard mockup */
+    .hero-visual {
+      align-self: flex-end;
+      position: relative;
+    }
+    .dashboard {
+      background: #ffffff;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5);
+      font-size: 0;
+    }
+    .dash-topbar {
+      background: #f8f5ee;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-dot.red   { background: #ff5f57; }
+    .dash-dot.yellow{ background: #febc2e; }
+    .dash-dot.green { background: #28c840; }
+    .dash-url {
+      flex: 1;
+      background: #fff;
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 11px;
+      color: #999;
+      font-family: var(--font-sans);
+      letter-spacing: 0;
+    }
+    .dash-body {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 320px;
+    }
+    .dash-sidebar {
+      background: #1f1f1f;
+      padding: 20px 0;
+    }
+    .dash-sidebar-logo {
+      padding: 0 16px 16px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand-orange);
+      letter-spacing: -.01em;
+    }
+    .dash-nav-item {
+      padding: 9px 16px;
+      font-size: 12px;
+      font-family: var(--font-sans);
+      color: rgba(255,255,255,.55);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dash-nav-item.active { background: rgba(255,72,0,.12); color: #fff; }
+    .dash-nav-item.active::before { content: ''; width: 3px; height: 100%; background: var(--brand-orange); position: absolute; left: 0; }
+    .dash-nav-item { position: relative; }
+    .dash-nav-icon { width: 14px; height: 14px; opacity: .7; flex-shrink: 0; }
+    .dash-main { background: #fcfcfa; padding: 20px; }
+    .dash-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .dash-title { font-size: 14px; font-weight: 600; font-family: var(--font-sans); color: #1f1f1f; }
+    .dash-badge-pill {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 100px;
+      background: rgba(255,72,0,.1);
+      color: var(--brand-orange);
+      font-weight: 600;
+      font-family: var(--font-sans);
+    }
+    .dash-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+    .dash-stat {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .dash-stat-val { font-size: 18px; font-weight: 600; font-family: var(--font-sans); color: #1f1f1f; }
+    .dash-stat-lbl { font-size: 10px; color: #999; font-family: var(--font-sans); margin-top: 2px; }
+    .dash-progress { margin-bottom: 14px; }
+    .dash-progress-lbl { font-size: 11px; font-family: var(--font-sans); color: #666; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .dash-bar { height: 6px; background: #e8e8e8; border-radius: 3px; overflow: hidden; }
+    .dash-bar-fill { height: 100%; border-radius: 3px; }
+    .dash-table { background: #fff; border: 1px solid rgba(0,0,0,.07); border-radius: 8px; overflow: hidden; }
+    .dash-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; padding: 8px 12px; font-size: 11px; font-family: var(--font-sans); border-bottom: 1px solid rgba(0,0,0,.05); align-items: center; }
+    .dash-row:last-child { border-bottom: none; }
+    .dash-row-name { font-weight: 500; color: #1f1f1f; }
+    .dash-row-meta { color: #999; }
+    .dash-chip { padding: 2px 7px; border-radius: 100px; font-size: 10px; font-weight: 600; }
+    .dash-chip.open        { background: #b2e9eb; color: #1f5c60; }
+    .dash-chip.review      { background: #ece6d9; color: #6b5c3a; }
+    .dash-chip.done        { background: #b9cdbe; color: #2d4d34; }
+    .dash-chip.answered    { background: #c6d9ff; color: #2b4a8a; }
+    .dash-chip.in-progress { background: #ece6d9; color: #6b5c3a; }
+    .dash-chip.not-started { background: #e5e5e5; color: #666; }
+
+    /* ─── SOCIAL PROOF ───────────────────────────────────────── */
+    .social-proof {
+      background: var(--bg-white);
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      padding: 28px 0;
+    }
+    .social-proof-inner {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .social-proof-text {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .social-divider {
+      width: 1px;
+      height: 32px;
+      background: var(--border-light);
+      flex-shrink: 0;
+    }
+    .logo-row { display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+    .logo-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: rgba(31,31,31,.28);
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .logo-name:hover { color: rgba(31,31,31,.5); }
+
+    /* ─── PLATFORM SECTION ───────────────────────────────────── */
+    .platform {
+      background: var(--bg-white);
+      padding: var(--section-py) 0;
+    }
+    .platform-header { text-align: center; margin-bottom: 40px; }
+    .platform-h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+      color: var(--text-dark);
+    }
+    .tab-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-bottom: 2px solid var(--border-light);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab-row::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      padding: 14px 24px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+      font-family: var(--font-sans);
+    }
+    .tab-btn:hover { color: var(--text-dark); }
+    .tab-btn.active { color: var(--text-dark); border-bottom-color: var(--brand-orange); font-weight: 600; }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .tab-content { display: none; padding: 48px 0 0; }
+    .tab-content.active { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; animation: tabFadeIn .28s ease both; }
+    .tab-desc-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--brand-orange);
+      margin-bottom: 12px;
+    }
+    .tab-desc-h3 {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .tab-desc-p { font-size: 1rem; font-weight: 300; line-height: 1.7; color: var(--text-muted); margin-bottom: 24px; }
+    .tab-visual {
+      background: var(--bg-warm);
+      border-radius: 12px;
+      padding: 24px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tab-visual-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+    .tab-card {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tab-card-icon { font-size: 20px; flex-shrink: 0; }
+    .tab-card-title { font-size: 13px; font-weight: 600; }
+    .tab-card-sub { font-size: 12px; color: var(--text-muted); }
+    .tab-card-status { margin-left: auto; }
+
+    /* ─── TAB KANBAN (Punch Lists) ───────────────────────────── */
+    .tab-kanban { display: flex; gap: 10px; align-items: flex-start; }
+    .tab-kanban-col { flex: 1; background: rgba(0,0,0,.04); border-radius: 8px; padding: 10px; }
+    .dark .tab-kanban-col { background: rgba(255,255,255,.05); }
+    .tab-kanban-col-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); margin-bottom: 8px; }
+    .tab-kanban-card { background: #fff; border: 1px solid var(--border-light); border-radius: 6px; padding: 9px 10px; font-size: 12px; font-weight: 500; line-height: 1.35; margin-bottom: 6px; }
+    .dark .tab-kanban-card { background: #1c1917; }
+    .tab-kanban-card:last-child { margin-bottom: 0; }
+    .tab-kanban-card-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 400; }
+
+    /* ─── TAB TABLE (RFI / Submittal) ────────────────────────── */
+    .tab-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .tab-table th { text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); padding: 0 8px 8px 0; border-bottom: 1px solid var(--border-light); }
+    .tab-table td { padding: 9px 8px 9px 0; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+    .tab-table tr:last-child td { border-bottom: none; }
+    .tab-table .col-num { font-weight: 700; color: var(--brand-orange); white-space: nowrap; }
+    .tab-table .col-subject { font-weight: 500; }
+    .tab-table .col-meta { font-size: 11px; color: var(--text-muted); }
+    .tab-table .col-badge { text-align: right; white-space: nowrap; }
+
+    /* ─── FEATURE CARDS ──────────────────────────────────────── */
+    .features {
+      background: var(--bg-warm);
+      padding: var(--section-py) 0;
+    }
+    .features-header { text-align: center; margin-bottom: 48px; max-width: 640px; margin-left: auto; margin-right: auto; }
+    .features-h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+      margin-bottom: 14px;
+    }
+    .features-sub { font-size: 1rem; font-weight: 300; color: var(--text-muted); }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 28px 22px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .feature-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.09); transform: translateY(-2px); }
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .feature-name { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+    .feature-desc { font-size: 0.875rem; font-weight: 300; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+    .feature-link {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--brand-orange);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap .15s;
+    }
+    .feature-link:hover { gap: 8px; }
+
+    /* ─── AI AGENTS ──────────────────────────────────────────── */
+    .ai-section {
+      background: linear-gradient(135deg, var(--salmon-from) 0%, var(--salmon-to) 100%);
+      padding: var(--section-py) 0;
+    }
+    .ai-header { text-align: center; margin-bottom: 48px; }
+    .ai-h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+      margin-bottom: 14px;
+      color: var(--text-dark);
+    }
+    .ai-sub { font-size: 1rem; font-weight: 300; color: var(--text-muted); max-width: 520px; margin: 0 auto; }
+    .ai-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .ai-card {
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.6);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .ai-card:hover { box-shadow: 0 16px 48px rgba(255,72,0,.12); transform: translateY(-3px); }
+    .ai-card-icon { font-size: 2.2rem; margin-bottom: 18px; display: block; }
+    .ai-card-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+    .ai-card-desc { font-size: 0.9rem; font-weight: 300; color: var(--text-muted); line-height: 1.6; }
+    .ai-card-tag {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(255,72,0,.1);
+      color: var(--brand-orange);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* ─── RESULTS ────────────────────────────────────────────── */
+    .results {
+      background: var(--bg-white);
+      padding: var(--section-py) 0;
+    }
+    .results-header { text-align: center; margin-bottom: 56px; }
+    .results-h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+    }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 56px; text-align: center; }
+    .stat-divider { border-right: 1px solid var(--border-light); }
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300;
+      color: var(--brand-orange);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-label { font-size: 1rem; font-weight: 500; color: var(--text-dark); }
+    .stat-sub { font-size: 0.875rem; font-weight: 300; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── VALUE PROPS ────────────────────────────────────────── */
+    .vp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-bottom: 56px;
+    }
+    .vp-card {
+      background: var(--bg-warm);
+      border-radius: 16px;
+      padding: 36px 32px;
+      text-align: center;
+    }
+    .vp-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff4800, #c93700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .vp-icon svg { width: 24px; height: 24px; color: #fff; }
+    .vp-title {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+    .vp-desc {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ─── EARLY ACCESS CTA ───────────────────────────────────── */
+    .early-access {
+      background: var(--bg-dark);
+      border-radius: 20px;
+      padding: 52px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .early-access-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #ff4800;
+      margin-bottom: 10px;
+    }
+    .early-access-h3 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.3;
+      color: var(--text-white);
+      max-width: 480px;
+      margin-bottom: 10px;
+    }
+    .early-access-sub {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text-white-muted);
+    }
+    .early-access-actions { flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+    .early-access-spots {
+      font-size: 0.78rem;
+      color: var(--text-white-muted);
+      text-align: right;
+    }
+    .early-access-spots strong { color: #ffb38a; font-weight: 600; }
+    .testimonial {
+      background: var(--bg-warm);
+      border-radius: 16px;
+      padding: 40px 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+    }
+    .testimonial-quote {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.55;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .testimonial-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff4800, #c93700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .testimonial-name { font-size: 0.9rem; font-weight: 600; }
+    .testimonial-role { font-size: 0.82rem; color: var(--text-muted); }
+    .testimonial-logo-block { text-align: right; }
+    .testimonial-logo-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: rgba(31,31,31,.2);
+    }
+    .testimonial-logo-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── FINAL CTA ──────────────────────────────────────────── */
+    .final-cta {
+      background: var(--bg-dark);
+      padding: var(--section-py) 0;
+      text-align: center;
+    }
+    .final-cta-h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+      color: var(--text-white);
+      max-width: 640px;
+      margin: 0 auto 32px;
+    }
+    .final-cta-h2 em { font-style: italic; color: #ffb38a; }
+    .final-cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--bg-dark);
+      color: var(--text-white);
+      padding: 64px 0 0;
+    }
+    .footer-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .footer-brand { flex-shrink: 0; }
+    .footer-logo {
+      font-family: var(--font-sans);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--brand-orange);
+      letter-spacing: -.02em;
+      margin-bottom: 12px;
+    }
+    .footer-tagline { font-size: 0.85rem; color: var(--text-white-muted); max-width: 200px; line-height: 1.5; }
+    .footer-socials { display: flex; gap: 10px; margin-top: 20px; }
+    .footer-social {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, background .2s;
+    }
+    .footer-social:hover { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.05); }
+    .footer-links-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 32px;
+      flex: 1;
+    }
+    .footer-col-title { font-size: 0.78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 14px; }
+    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col li a {
+      font-size: 0.875rem;
+      color: var(--text-white-muted);
+      transition: color .15s;
+    }
+    .footer-col li a:hover { color: var(--text-white); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-copy { font-size: 0.82rem; color: rgba(255,255,255,.3); }
+    .footer-bottom-links { display: flex; gap: 20px; }
+    .footer-bottom-links a { font-size: 0.82rem; color: rgba(255,255,255,.35); transition: color .15s; }
+    .footer-bottom-links a:hover { color: rgba(255,255,255,.65); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .feature-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-links-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .hero-content { padding-bottom: 80px; }
+      .tab-content.active { grid-template-columns: 1fr; }
+      .ai-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr; gap: 32px; }
+      .stat-divider { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 32px; }
+      .testimonial { grid-template-columns: 1fr; }
+      .testimonial-logo-block { text-align: left; }
+    }
+    @media (max-width: 768px) {
+      :root { --section-py: 56px; }
+      .nav-links, .nav-ctas { display: none; }
+      .nav-hamburger { display: flex; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+      .footer-links-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { flex-direction: column; }
+      .vp-grid { grid-template-columns: 1fr; gap: 16px; }
+      .early-access { padding: 36px 28px; flex-direction: column; align-items: flex-start; }
+      .early-access-actions { align-items: flex-start; width: 100%; }
+      .early-access-actions .btn { width: 100%; text-align: center; }
+      .early-access-spots { text-align: left; }
+    }
+    @media (max-width: 480px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .footer-links-grid { grid-template-columns: 1fr; }
+      .early-access { padding: 28px 20px; }
+    }
+
+    /* ─── NAV SIGN IN LINK ───────────────────────────────────── */
+    .nav-signin {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 4px;
+      transition: color .15s;
+    }
+    .nav-signin:hover { color: var(--text-dark); }
+    body.dark .nav-signin { color: var(--text-white-muted); }
+    body.dark .nav-signin:hover { color: var(--text-white); }
+
+    /* ─── MODALS ─────────────────────────────────────────────── */
+    .fp-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 10, 0.72);
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .fp-modal-overlay.open { display: flex; }
+    .fp-modal {
+      background: var(--bg-white);
+      border-radius: 20px;
+      padding: 48px;
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.28);
+    }
+    .fp-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--bg-warm);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 18px;
+      line-height: 1;
+      transition: background .15s, color .15s;
+    }
+    .fp-modal-close:hover { background: var(--border-light); color: var(--text-dark); }
+    .fp-modal-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--brand-orange);
+      margin-bottom: 8px;
+    }
+    .fp-modal-h2 {
+      font-family: var(--font-serif);
+      font-size: 1.65rem;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+    .fp-modal-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    .fp-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .fp-field label { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); }
+    .fp-field input {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border-light);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: var(--font-sans);
+      background: var(--bg-light);
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .fp-field input:focus {
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255,72,0,0.1);
+    }
+    .fp-field input::placeholder { color: rgba(31,31,31,.3); }
+    .fp-modal-submit { width: 100%; margin-top: 8px; }
+    .fp-field-error {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--brand-orange);
+      margin-top: -6px;
+      margin-bottom: 8px;
+    }
+    .fp-form-success { display: none; text-align: center; padding: 16px 0 4px; }
+    .fp-success-icon {
+      width: 52px;
+      height: 52px;
+      background: #ecfdf5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 22px;
+    }
+    .fp-success-h3 {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+    .fp-success-p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* Dark mode overrides for modals */
+    body.dark .fp-modal { background: #1a1a1a; }
+    body.dark .fp-modal-h2, body.dark .fp-field label, body.dark .fp-success-h3 { color: var(--text-white); }
+    body.dark .fp-modal-sub, body.dark .fp-success-p { color: var(--text-white-muted); }
+    body.dark .fp-field input { background: #111; border-color: rgba(255,255,255,.15); color: var(--text-white); }
+    body.dark .fp-field input::placeholder { color: rgba(255,255,255,.2); }
+    body.dark .fp-modal-close { background: rgba(255,255,255,.08); color: rgba(255,255,255,.45); }
+    body.dark .fp-modal-close:hover { background: rgba(255,255,255,.15); color: var(--text-white); }
+
+    /* ─── ANIMATION ──────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-badge   { animation: fadeUp .5s ease both; animation-delay: .05s; }
+    .hero-headline{ animation: fadeUp .5s ease both; animation-delay: .15s; }
+    .hero-sub     { animation: fadeUp .5s ease both; animation-delay: .25s; }
+    .hero-ctas    { animation: fadeUp .5s ease both; animation-delay: .35s; }
+    .hero-visual  { animation: fadeUp .6s ease both; animation-delay: .45s; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ NAV -->
+<header class="nav-wrapper" id="nav">
+  <div class="container">
+    <nav class="nav-inner">
+      <a href="#" class="nav-logo" style="display:flex;align-items:center;gap:0;">
+        <img src="brand assets/logo-dark.svg" alt="Foreplannr" style="height:32px;width:auto;">
+      </a>
+
+      <div class="nav-links" role="navigation" aria-label="Main">
+        <a href="#" class="nav-link">
+          Products
+          <svg class="nav-chevron" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="nav-link">
+          Solutions
+          <svg class="nav-chevron" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="nav-link">
+          Resources
+          <svg class="nav-chevron" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="nav-link">Pricing</a>
+      </div>
+
+      <div class="nav-ctas">
+        <a href="#" class="nav-signin">Sign in</a>
+      </div>
+
+      <!-- Theme toggle -->
+      <div class="theme-toggle" id="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode" aria-pressed="false">
+        <div class="toggle-inner">
+          <div class="toggle-knob" id="toggle-knob">
+            <!-- Dark mode: moon; light mode: sun — managed by JS -->
+            <svg class="toggle-icon toggle-icon-dark" id="knob-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </div>
+          <div class="toggle-bg-icon">
+            <svg class="toggle-icon toggle-icon-light" id="bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="nav-mobile" id="nav-mobile" role="navigation" aria-label="Mobile menu">
+    <a href="#" class="nav-link">Products</a>
+    <a href="#" class="nav-link">Solutions</a>
+    <a href="#" class="nav-link">Resources</a>
+    <a href="#" class="nav-link">Pricing</a>
+    <div class="nav-ctas">
+      <a href="#" class="nav-signin">Sign in</a>
+    </div>
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════════════ HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          New! Foreplannr AI
+        </div>
+        <h1 class="hero-headline">Where construction projects go to close out.</h1>
+        <p class="hero-sub">Foreplannr gives construction PMs a single source of truth — from groundbreak to closeout. Less chaos. More handoffs. Every time.</p>
+        <div class="hero-ctas">
+          <div class="inline-waitlist" id="waitlist-hero">
+            <form class="inline-waitlist-form">
+              <div class="inline-waitlist-row">
+                <input class="inline-waitlist-input" type="email" placeholder="your@email.com" required autocomplete="email">
+                <button type="submit" class="btn btn-primary btn-lg">Join Waitlist</button>
+              </div>
+              <p class="inline-waitlist-error"></p>
+            </form>
+            <p class="inline-waitlist-success"><strong>You're on the list!</strong> We'll be in touch soon.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="dashboard">
+          <div class="dash-topbar">
+            <div class="dash-dot red"></div>
+            <div class="dash-dot yellow"></div>
+            <div class="dash-dot green"></div>
+            <div class="dash-url">app.foreplannr.com/projects/tower-42</div>
+          </div>
+          <div class="dash-body">
+            <div class="dash-sidebar">
+              <div class="dash-sidebar-logo">Foreplannr</div>
+              <div class="dash-nav-item active">
+                <svg class="dash-nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+                Dashboard
+              </div>
+              <div class="dash-nav-item">
+                <svg class="dash-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h8"/></svg>
+                RFI Manager
+              </div>
+              <div class="dash-nav-item">
+                <svg class="dash-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8l2 2 4-4"/></svg>
+                Submittals
+              </div>
+              <div class="dash-nav-item">
+                <svg class="dash-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+                Punch List
+              </div>
+              <div class="dash-nav-item">
+                <svg class="dash-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13L6 9l3 3 5-7"/></svg>
+                Closeout
+              </div>
+              <div class="dash-nav-item">
+                <svg class="dash-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6"/></svg>
+                Team
+              </div>
+            </div>
+
+            <div class="dash-main">
+              <div class="dash-header-row">
+                <span class="dash-title">Tower 42 — Active Phase</span>
+                <span class="dash-badge-pill">On Track</span>
+              </div>
+              <div class="dash-stat-row">
+                <div class="dash-stat">
+                  <div class="dash-stat-val">24</div>
+                  <div class="dash-stat-lbl">Open RFIs</div>
+                </div>
+                <div class="dash-stat">
+                  <div class="dash-stat-val">87%</div>
+                  <div class="dash-stat-lbl">Submittals</div>
+                </div>
+                <div class="dash-stat">
+                  <div class="dash-stat-val">12d</div>
+                  <div class="dash-stat-lbl">To Closeout</div>
+                </div>
+              </div>
+              <div class="dash-progress">
+                <div class="dash-progress-lbl"><span>Project Completion</span><span>73%</span></div>
+                <div class="dash-bar"><div class="dash-bar-fill" style="width:73%; background: linear-gradient(90deg, #ff4800, #ffa040);"></div></div>
+              </div>
+              <div class="dash-progress">
+                <div class="dash-progress-lbl"><span>Punch List Resolved</span><span>91%</span></div>
+                <div class="dash-bar"><div class="dash-bar-fill" style="width:91%; background: linear-gradient(90deg, #2f7579, #4aabb0);"></div></div>
+              </div>
+              <div class="dash-table">
+                <div class="dash-row">
+                  <span class="dash-row-name">RFI-0042 — Steel moment frame</span>
+                  <span class="dash-row-meta">Due in 3d</span>
+                  <span class="dash-chip open">Open</span>
+                </div>
+                <div class="dash-row">
+                  <span class="dash-row-name">MECH-Sub-018 — AHU specs</span>
+                  <span class="dash-row-meta">Engr. review</span>
+                  <span class="dash-chip review">Review</span>
+                </div>
+                <div class="dash-row">
+                  <span class="dash-row-name">Closeout — O&M Manuals</span>
+                  <span class="dash-row-meta">Uploaded</span>
+                  <span class="dash-chip done">Done</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- ═══════════════════════════════════════════════════ PLATFORM -->
+<section class="platform">
+  <div class="container">
+    <div class="platform-header">
+      <p class="overline">The Foreplannr Project Platform</p>
+      <h2 class="platform-h2">A project hub that's really smart.</h2>
+    </div>
+
+    <div class="tab-row" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="handoff">Handoff Hub</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="rfi">RFI Manager</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="submittal">Submittal Tracker</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="punch">Punch Lists</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="closeout">Closeout</button>
+    </div>
+
+    <!-- Handoff -->
+    <div class="tab-content active" data-tab-content="handoff">
+      <div>
+        <p class="tab-desc-label">Handoff Hub</p>
+        <h3 class="tab-desc-h3">Every handoff, documented and delivered.</h3>
+        <p class="tab-desc-p">Stop hunting through inboxes. Handoff Hub centralizes all project transfers — from subcontractor sign-offs to owner walkthroughs — with a single, auditable record.</p>
+        <a href="/login" class="btn btn-primary">See Handoff Hub</a>
+      </div>
+      <div class="tab-visual">
+        <div class="tab-visual-title">Handoff Checklist — Level 3 MEP</div>
+        <div class="tab-card">
+          <span class="tab-card-icon">✅</span>
+          <div><div class="tab-card-title">Mechanical Systems</div><div class="tab-card-sub">Signed off by GC &amp; Owner · 2d ago</div></div>
+          <div class="tab-card-status"><span class="dash-chip done">Done</span></div>
+        </div>
+        <div class="tab-card">
+          <span class="tab-card-icon">🔄</span>
+          <div><div class="tab-card-title">Electrical Final</div><div class="tab-card-sub">Awaiting inspector signature</div></div>
+          <div class="tab-card-status"><span class="dash-chip review">Review</span></div>
+        </div>
+        <div class="tab-card">
+          <span class="tab-card-icon">📋</span>
+          <div><div class="tab-card-title">Plumbing Systems</div><div class="tab-card-sub">Due in 5 days</div></div>
+          <div class="tab-card-status"><span class="dash-chip open">Open</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RFI -->
+    <div class="tab-content" data-tab-content="rfi">
+      <div>
+        <p class="tab-desc-label">RFI Manager</p>
+        <h3 class="tab-desc-h3">Track every question, every time.</h3>
+        <p class="tab-desc-p">Never lose an RFI again. Log, assign, and track every request for information with automatic follow-up reminders and status tracking.</p>
+        <a href="/login" class="btn btn-primary">See RFI Manager</a>
+      </div>
+      <div class="tab-visual">
+        <div class="tab-visual-title">RFI Log — Tower 42</div>
+        <table class="tab-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Subject</th>
+              <th>Sent to</th>
+              <th class="col-badge">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-num">042</td>
+              <td class="col-subject">Moment Frame Clarification</td>
+              <td class="col-meta">Structural</td>
+              <td class="col-badge"><span class="dash-chip open">Open</span></td>
+            </tr>
+            <tr>
+              <td class="col-num">041</td>
+              <td class="col-subject">Storm Drain Elevation</td>
+              <td class="col-meta">Civil</td>
+              <td class="col-badge"><span class="dash-chip in-progress">In Review</span></td>
+            </tr>
+            <tr>
+              <td class="col-num">039</td>
+              <td class="col-subject">Panel Schedule Update</td>
+              <td class="col-meta">Electrical</td>
+              <td class="col-badge"><span class="dash-chip answered">Answered</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Submittal -->
+    <div class="tab-content" data-tab-content="submittal">
+      <div>
+        <p class="tab-desc-label">Submittal Tracker</p>
+        <h3 class="tab-desc-h3">Keep submittals moving forward.</h3>
+        <p class="tab-desc-p">Track every submittal package through review cycles. Know exactly where each one is and when it's due back — no more chasing engineers.</p>
+        <a href="/login" class="btn btn-primary">See Submittal Tracker</a>
+      </div>
+      <div class="tab-visual">
+        <div class="tab-visual-title">Submittal Log — Tower 42</div>
+        <table class="tab-table">
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Spec</th>
+              <th>Due</th>
+              <th class="col-badge">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-subject">AHU Product Data — Rev. 3</td>
+              <td class="col-meta">15700</td>
+              <td class="col-meta">—</td>
+              <td class="col-badge"><span class="dash-chip done">Approved</span></td>
+            </tr>
+            <tr>
+              <td class="col-subject">Structural Steel Shop Drawings</td>
+              <td class="col-meta">05120</td>
+              <td class="col-meta">Mar 12</td>
+              <td class="col-badge"><span class="dash-chip in-progress">In Review</span></td>
+            </tr>
+            <tr>
+              <td class="col-subject">Curtain Wall System</td>
+              <td class="col-meta">08900</td>
+              <td class="col-meta">Mar 18</td>
+              <td class="col-badge"><span class="dash-chip open">Open</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Punch -->
+    <div class="tab-content" data-tab-content="punch">
+      <div>
+        <p class="tab-desc-label">Punch Lists</p>
+        <h3 class="tab-desc-h3">Close out punch list items fast.</h3>
+        <p class="tab-desc-p">Create, assign, and resolve punch list items from the field. Photo attachments, trade assignment, and real-time progress tracking all in one place.</p>
+        <a href="/login" class="btn btn-primary">See Punch Lists</a>
+      </div>
+      <div class="tab-visual">
+        <div class="tab-visual-title">Punch List — Final Walkthrough</div>
+        <div class="tab-kanban">
+          <div class="tab-kanban-col">
+            <div class="tab-kanban-col-title">Open</div>
+            <div class="tab-kanban-card">Touch-up paint — Suite 400<div class="tab-kanban-card-sub">Apex Painting · Due 2d</div></div>
+            <div class="tab-kanban-card">HVAC grille — Rm 214<div class="tab-kanban-card-sub">Unassigned</div></div>
+          </div>
+          <div class="tab-kanban-col">
+            <div class="tab-kanban-col-title">In Progress</div>
+            <div class="tab-kanban-card">LED fixture alignment<div class="tab-kanban-card-sub">Corridor B · Photo uploaded</div></div>
+            <div class="tab-kanban-card">Threshold seal — Exit 3<div class="tab-kanban-card-sub">Flooring crew on site</div></div>
+          </div>
+          <div class="tab-kanban-col">
+            <div class="tab-kanban-col-title">Resolved</div>
+            <div class="tab-kanban-card">Door hardware — Lobby<div class="tab-kanban-card-sub">Verified · 1d ago</div></div>
+            <div class="tab-kanban-card">Stair handrail — Level 2<div class="tab-kanban-card-sub">Verified · 3d ago</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closeout -->
+    <div class="tab-content" data-tab-content="closeout">
+      <div>
+        <p class="tab-desc-label">Closeout</p>
+        <h3 class="tab-desc-h3">Invoice sooner. Close out faster.</h3>
+        <p class="tab-desc-p">Your closeout package builds itself as the project progresses. O&amp;M manuals, as-builts, warranties — all collected and ready when the job is done.</p>
+        <a href="/login" class="btn btn-primary">See Closeout Hub</a>
+      </div>
+      <div class="tab-visual">
+        <div class="tab-visual-title">Closeout Package — Tower 42</div>
+        <div class="tab-card">
+          <span class="tab-card-icon">📚</span>
+          <div><div class="tab-card-title">O&amp;M Manuals</div><div class="tab-card-sub">All 12 volumes uploaded &amp; approved</div></div>
+          <div class="tab-card-status"><span class="dash-chip done">Done</span></div>
+        </div>
+        <div class="tab-card">
+          <span class="tab-card-icon">📐</span>
+          <div><div class="tab-card-title">As-Built Drawings</div><div class="tab-card-sub">MEP mark-up in progress</div></div>
+          <div class="tab-card-status"><span class="dash-chip in-progress">In Progress</span></div>
+        </div>
+        <div class="tab-card">
+          <span class="tab-card-icon">🛡️</span>
+          <div><div class="tab-card-title">Warranty Documentation</div><div class="tab-card-sub">Awaiting sub submissions</div></div>
+          <div class="tab-card-status"><span class="dash-chip not-started">Not Started</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════ FEATURE CARDS -->
+<section class="features">
+  <div class="container">
+    <div class="features-header">
+      <h2 class="features-h2">Managing a project is hard. Foreplannr makes it easier.</h2>
+      <p class="features-sub">One platform, every workflow. From the first shovel to the final lien waiver.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🤝</span>
+        <div class="feature-name">Handoff Hub</div>
+        <p class="feature-desc">Structured handoffs with sign-offs, photos, and a full audit trail.</p>
+        <a href="#" class="feature-link">Learn more →</a>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📝</span>
+        <div class="feature-name">RFI Manager</div>
+        <p class="feature-desc">Route, track, and resolve RFIs before they become schedule busters.</p>
+        <a href="#" class="feature-link">Learn more →</a>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📂</span>
+        <div class="feature-name">Submittal Tracker</div>
+        <p class="feature-desc">Keep submittals moving through approval chains automatically.</p>
+        <a href="#" class="feature-link">Learn more →</a>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✅</span>
+        <div class="feature-name">Punch List</div>
+        <p class="feature-desc">Field-ready punch lists with photo capture and instant assignment.</p>
+        <a href="#" class="feature-link">Learn more →</a>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📦</span>
+        <div class="feature-name">Closeout Hub</div>
+        <p class="feature-desc">Auto-assemble your closeout package and get paid weeks sooner.</p>
+        <a href="#" class="feature-link">Learn more →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════ AI AGENTS -->
+<section class="ai-section">
+  <div class="container">
+    <div class="ai-header">
+      <p class="overline overline-orange">Foreplannr AI</p>
+      <h2 class="ai-h2">Built-in AI agents that work for you 24/7</h2>
+      <p class="ai-sub">Your project team never sleeps. Neither does Foreplannr AI — drafting responses, flagging risks, and keeping your schedule honest.</p>
+    </div>
+    <div class="ai-grid">
+      <div class="ai-card">
+        <span class="ai-card-icon">📋</span>
+        <div class="ai-card-name">Spec Agent</div>
+        <p class="ai-card-desc">Reads your project specs and automatically cross-references submittals and RFIs for discrepancies — before the inspector finds them.</p>
+        <span class="ai-card-tag">AI-Powered</span>
+      </div>
+      <div class="ai-card">
+        <span class="ai-card-icon">💬</span>
+        <div class="ai-card-name">RFI Agent</div>
+        <p class="ai-card-desc">Drafts technically precise RFI responses based on project specs and historic precedent. Your engineer reviews; the agent does the legwork.</p>
+        <span class="ai-card-tag">AI-Powered</span>
+      </div>
+      <div class="ai-card">
+        <span class="ai-card-icon">📅</span>
+        <div class="ai-card-name">Schedule Agent</div>
+        <p class="ai-card-desc">Monitors open items against your master schedule and proactively surfaces what's at risk — before a two-day RFI becomes a two-week delay.</p>
+        <span class="ai-card-tag">AI-Powered</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════ BUILT FOR THE FIELD -->
+<section class="results">
+  <div class="container">
+    <div class="results-header">
+      <p class="overline">Why Foreplannr</p>
+      <h2 class="results-h2">Built by contractors, for contractors.</h2>
+    </div>
+    <div class="vp-grid">
+      <div class="vp-card">
+        <div class="vp-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+          </svg>
+        </div>
+        <div class="vp-title">Simple setup</div>
+        <div class="vp-desc">Create a project, add your team, and start tracking — no consultant, no onboarding call, no configuration nightmare.</div>
+      </div>
+      <div class="vp-card">
+        <div class="vp-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="vp-title">No training required</div>
+        <div class="vp-desc">If your PMs can use email, they can use Foreplannr. We designed it for people on job sites, not software engineers.</div>
+      </div>
+      <div class="vp-card">
+        <div class="vp-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="vp-title">Built for the field</div>
+        <div class="vp-desc">RFIs, submittals, punch lists, and closeout all in one place — the way a construction PM actually thinks about a project.</div>
+      </div>
+    </div>
+    <div class="early-access">
+      <div>
+        <h3 class="early-access-h3">Coming Soon.</h3>
+        <p class="early-access-sub">Foreplannr is currently in development. Join the waitlist and we'll notify you when we launch.</p>
+      </div>
+      <div class="early-access-actions">
+        <div class="inline-waitlist" id="waitlist-early">
+          <form class="inline-waitlist-form">
+            <div class="inline-waitlist-row">
+              <input class="inline-waitlist-input" type="email" placeholder="your@email.com" required autocomplete="email">
+              <button type="submit" class="btn btn-primary">Join Waitlist</button>
+            </div>
+            <p class="inline-waitlist-error"></p>
+          </form>
+          <p class="inline-waitlist-success"><strong>You're on the list!</strong> We'll be in touch soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════ FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="final-cta-h2">Make <em>impossible</em> projects feel impossibly simple, with Foreplannr.</h2>
+    <div class="final-cta-btns">
+      <div class="inline-waitlist" id="waitlist-final" style="margin: 0 auto; align-items: center;">
+        <form class="inline-waitlist-form">
+          <div class="inline-waitlist-row">
+            <input class="inline-waitlist-input" type="email" placeholder="your@email.com" required autocomplete="email">
+            <button type="submit" class="btn btn-primary btn-lg">Join Waitlist</button>
+          </div>
+          <p class="inline-waitlist-error"></p>
+        </form>
+        <p class="inline-waitlist-success"><strong>You're on the list!</strong> We'll be in touch soon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════ FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo" style="margin-bottom:12px;">
+        <img src="brand assets/exportsvg_copy_foreplannr.svg" alt="Foreplannr" style="height:44px;width:auto;">
+      </div>
+        <p class="footer-tagline">Where construction projects go to close out.</p>
+        <div class="footer-socials">
+          <!-- LinkedIn -->
+          <a href="#" class="footer-social" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="rgba(255,255,255,.6)">
+              <path d="M3.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 6h3v8H2V6zm5 0h2.7v1.1h.04C10.28 6.44 11.38 6 12.5 6 15 6 15.5 7.56 15.5 9.7V14h-3v-3.8c0-.9 0-2.05-1.25-2.05-1.26 0-1.45.98-1.45 2v3.85H7V6z"/>
+            </svg>
+          </a>
+          <!-- Twitter/X -->
+          <a href="#" class="footer-social" aria-label="Twitter">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="rgba(255,255,255,.6)">
+              <path d="M12.6 1h2.4L9.8 6.8 16 15h-4.5L8 10.4 3.9 15H1.5l5.5-6.3L0 1h4.6l3.2 4.2L12.6 1zM11.7 13.5h1.3L4.4 2.3H3L11.7 13.5z"/>
+            </svg>
+          </a>
+          <!-- YouTube -->
+          <a href="#" class="footer-social" aria-label="YouTube">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="rgba(255,255,255,.6)">
+              <path d="M15.5 4.5s-.15-1.1-.65-1.6c-.6-.65-1.3-.65-1.6-.7C11.1 2 8 2 8 2s-3.1 0-5.25.2c-.3.05-1 .05-1.6.7C.65 3.4.5 4.5.5 4.5S.35 5.8.35 7.1v1.2c0 1.3.15 2.6.15 2.6s.15 1.1.65 1.6c.6.65 1.4.63 1.75.7C4 13.4 8 13.4 8 13.4s3.1 0 5.25-.2c.3-.05 1-.05 1.6-.7.5-.5.65-1.6.65-1.6s.15-1.3.15-2.6V7.1C15.65 5.8 15.5 4.5 15.5 4.5zM6.5 10V5.5l4.3 2.3L6.5 10z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links-grid">
+        <div class="footer-col">
+          <div class="footer-col-title">Products</div>
+          <ul>
+            <li><a href="#">Handoff Hub</a></li>
+            <li><a href="#">RFI Manager</a></li>
+            <li><a href="#">Submittal Tracker</a></li>
+            <li><a href="#">Punch Lists</a></li>
+            <li><a href="#">Closeout Hub</a></li>
+            <li><a href="#">Foreplannr AI</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Solutions</div>
+          <ul>
+            <li><a href="#">General Contractors</a></li>
+            <li><a href="#">Subcontractors</a></li>
+            <li><a href="#">Owners</a></li>
+            <li><a href="#">Design-Build</a></li>
+            <li><a href="#">Mega Projects</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Resources</div>
+          <ul>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Case Studies</a></li>
+            <li><a href="#">Webinars</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">API Reference</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Company</div>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Partners</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Legal</div>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">GDPR</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Foreplannr, Inc. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════ MODAL: DEMO -->
+<div class="fp-modal-overlay" id="modal-demo" role="dialog" aria-modal="true" aria-labelledby="modal-demo-title">
+  <div class="fp-modal">
+    <button class="fp-modal-close" aria-label="Close">✕</button>
+    <div id="modal-demo-form">
+      <p class="fp-modal-eyebrow">Get a demo</p>
+      <h2 class="fp-modal-h2" id="modal-demo-title">See Foreplannr in action.</h2>
+      <p class="fp-modal-sub">We'll walk you through the platform and answer your questions. Usually takes 20 minutes.</p>
+      <form id="form-demo" novalidate>
+        <div class="fp-field">
+          <label for="demo-name">Full name</label>
+          <input type="text" id="demo-name" name="name" placeholder="Jane Smith" required>
+        </div>
+        <div class="fp-field">
+          <label for="demo-email">Work email</label>
+          <input type="email" id="demo-email" name="email" placeholder="jane@company.com" required>
+        </div>
+        <div class="fp-field">
+          <label for="demo-company">Company</label>
+          <input type="text" id="demo-company" name="company" placeholder="Smith Construction LLC">
+        </div>
+        <div class="fp-field">
+          <label for="demo-phone">Phone <span style="font-weight:400;opacity:.6;">(optional)</span></label>
+          <input type="tel" id="demo-phone" name="phone" placeholder="+1 (555) 000-0000">
+        </div>
+        <p class="fp-field-error" id="demo-error"></p>
+        <button type="submit" class="btn btn-primary btn-lg fp-modal-submit">Request demo</button>
+      </form>
+    </div>
+    <div class="fp-form-success" id="demo-success">
+      <div class="fp-success-icon">✅</div>
+      <h3 class="fp-success-h3">You're on the list.</h3>
+      <p class="fp-success-p">We'll reach out within one business day to schedule your demo. Talk soon.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ MODAL: WAITLIST -->
+<div class="fp-modal-overlay" id="modal-waitlist" role="dialog" aria-modal="true" aria-labelledby="modal-waitlist-title">
+  <div class="fp-modal">
+    <button class="fp-modal-close" aria-label="Close">✕</button>
+    <div id="modal-waitlist-form">
+      <p class="fp-modal-eyebrow">Early access</p>
+      <h2 class="fp-modal-h2" id="modal-waitlist-title">Be one of our first.</h2>
+      <p class="fp-modal-sub">We're looking for 10 contractors to help shape Foreplannr. Get full access free — and a real say in what we build next.</p>
+      <form id="form-waitlist" novalidate>
+        <div class="fp-field">
+          <label for="waitlist-email">Work email</label>
+          <input type="email" id="waitlist-email" name="email" placeholder="you@company.com" required>
+        </div>
+        <p class="fp-field-error" id="waitlist-error"></p>
+        <button type="submit" class="btn btn-primary btn-lg fp-modal-submit">Apply for early access</button>
+      </form>
+    </div>
+    <div class="fp-form-success" id="waitlist-success">
+      <div class="fp-success-icon">🎉</div>
+      <h3 class="fp-success-h3">You're in.</h3>
+      <p class="fp-success-p">We'll be in touch soon. Thanks for believing in Foreplannr early — it means a lot.</p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // ── Nav scroll shadow
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  // ── Mobile hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('nav-mobile');
+  hamburger.addEventListener('click', () => {
+    const open = hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+  });
+
+  // ── Tab switching
+  function activateTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      const active = b.dataset.tab === tab;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', String(active));
+    });
+    document.querySelectorAll('.tab-content').forEach(panel => {
+      panel.classList.remove('active');
+    });
+    const target = document.querySelector(`.tab-content[data-tab-content="${tab}"]`);
+    if (target) {
+      // Force reflow so animation replays on every switch
+      void target.offsetWidth;
+      target.classList.add('active');
+    }
+  }
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
+
+  // ── Theme toggle
+  const MOON_SVG = `<svg class="toggle-icon toggle-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+  const SUN_SVG  = `<svg class="toggle-icon toggle-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+
+  const themeToggle = document.getElementById('theme-toggle');
+  const knobEl = document.getElementById('toggle-knob');
+  const bgIconEl = document.getElementById('bg-icon');
+
+  // Restore saved preference
+  let isDark = localStorage.getItem('fp-theme') !== 'light';
+  applyTheme(isDark);
+
+  function applyTheme(dark) {
+    isDark = dark;
+    document.body.classList.toggle('dark', dark);
+    themeToggle.setAttribute('aria-pressed', dark);
+    // Knob shows current mode icon; bg shows opposite
+    knobEl.innerHTML = dark ? MOON_SVG : SUN_SVG;
+    document.querySelector('.toggle-bg-icon').innerHTML = dark ? SUN_SVG.replace('toggle-icon-dark','toggle-icon-light') : MOON_SVG.replace('toggle-icon-light','toggle-icon-dark');
+    localStorage.setItem('fp-theme', dark ? 'dark' : 'light');
+  }
+
+  themeToggle.addEventListener('click', () => applyTheme(!isDark));
+  themeToggle.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applyTheme(!isDark); }
+  });
+</script>
+
+<script>
+  // ── App URL — update APP_URL for production deployment
+  const APP_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : 'https://app.foreplannr.com'; // TODO: update before going live
+
+  // ── Supabase client (anon key is safe to expose in browser)
+  const _sb = window.supabase.createClient(
+    'https://poyaktkeyamnbvfhgfaf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBveWFrdGtleWFtbmJ2ZmhnZmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NjQ5NTcsImV4cCI6MjA4ODI0MDk1N30.dDGnfx-RCn0kEMgBj2xL3Hih9HzcIDKh7MG3gQ1zxcc'
+  );
+
+  // ── Modal helpers
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Close on overlay click or close button
+  document.querySelectorAll('.fp-modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeModal(overlay.id);
+    });
+  });
+  document.querySelectorAll('.fp-modal-close').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.closest('.fp-modal-overlay').id));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.fp-modal-overlay.open').forEach(m => closeModal(m.id));
+    }
+  });
+
+  // ── Sign in → app
+  document.querySelectorAll('a, button').forEach(el => {
+    if (el.textContent.trim() === 'Sign in') {
+      el.addEventListener('click', e => { e.preventDefault(); window.location.href = APP_URL + '/login'; });
+    }
+  });
+
+  // ── Feature card "Learn more" links → scroll to platform + activate tab
+  const FEATURE_TABS = ['handoff', 'rfi', 'submittal', 'punch', 'closeout'];
+  document.querySelectorAll('.feature-link').forEach((link, i) => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      activateTab(FEATURE_TABS[i]);
+      document.querySelector('.platform').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ── Prevent page jumps on all remaining href="#" links
+  document.querySelectorAll('a[href="#"]').forEach(a => {
+    a.addEventListener('click', e => e.preventDefault());
+  });
+
+  // ── Demo form submission
+  document.getElementById('form-demo').addEventListener('submit', e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    console.log('[Foreplannr] Demo request:', data);
+    document.getElementById('modal-demo-form').style.display = 'none';
+    document.getElementById('demo-success').style.display = 'block';
+  });
+
+  // ── Inline waitlist form submission (handles all 3 instances)
+  document.querySelectorAll('.inline-waitlist-form').forEach(form => {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const container = form.closest('.inline-waitlist');
+      const input = form.querySelector('.inline-waitlist-input');
+      const btn   = form.querySelector('button[type="submit"]');
+      const errEl = form.querySelector('.inline-waitlist-error');
+      const email = input.value.trim();
+
+      errEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Joining…';
+
+      const { error } = await _sb.from('waitlist').insert({ email });
+
+      if (error && error.code !== '23505') {
+        // 23505 = unique_violation — already on waitlist, show success anyway
+        errEl.textContent = 'Something went wrong. Please try again.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Join Waitlist';
+        return;
+      }
+
+      container.classList.add('done');
+    });
+  });
+</script>
+</body>
+</html>
